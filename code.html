@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>BMS CORE - Obsidian Kinetic Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .glass-panel {
+            background: rgba(26, 33, 29, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+        .luminous-border {
+            position: relative;
+        }
+        .luminous-border::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 50%, rgba(255,255,255,0.05) 100%);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+        .radial-progress {
+            --value: 85;
+            --size: 12rem;
+            --thickness: 1rem;
+            width: var(--size);
+            height: var(--size);
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: radial-gradient(closest-side, transparent 80%, transparent 0),
+                        conic-gradient(#4edea3 calc(var(--value) * 1%), #1a211d 0);
+        }
+        .radial-progress::before {
+            content: "";
+            position: absolute;
+            width: calc(var(--size) - var(--thickness));
+            height: calc(var(--size) - var(--thickness));
+            background-color: #0e1511;
+            border-radius: 50%;
+        }
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.6; filter: blur(8px); }
+            50% { opacity: 1; filter: blur(12px); }
+        }
+        .status-glow-green { box-shadow: 0 0 15px rgba(78, 222, 163, 0.3); }
+        .status-glow-amber { box-shadow: 0 0 15px rgba(252, 124, 120, 0.3); }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-container": "#00422b",
+                    "primary": "#4edea3",
+                    "surface": "#0e1511",
+                    "on-tertiary-container": "#711419",
+                    "on-secondary": "#002e6a",
+                    "on-surface": "#dde4dd",
+                    "surface-container": "#1a211d",
+                    "inverse-primary": "#006c49",
+                    "tertiary-fixed-dim": "#ffb3af",
+                    "primary-container": "#10b981",
+                    "inverse-on-surface": "#2b322d",
+                    "on-tertiary-fixed": "#410005",
+                    "surface-container-highest": "#2f3632",
+                    "on-primary-fixed": "#002113",
+                    "outline": "#86948a",
+                    "secondary-fixed": "#d8e2ff",
+                    "on-tertiary": "#650911",
+                    "on-secondary-fixed-variant": "#004395",
+                    "tertiary-fixed": "#ffdad7",
+                    "on-error-container": "#ffdad6",
+                    "error-container": "#93000a",
+                    "outline-variant": "#3c4a42",
+                    "tertiary": "#ffb3af",
+                    "on-error": "#690005",
+                    "primary-fixed-dim": "#4edea3",
+                    "surface-tint": "#4edea3",
+                    "surface-container-high": "#242c27",
+                    "on-secondary-container": "#e6ecff",
+                    "background": "#0e1511",
+                    "on-tertiary-fixed-variant": "#842225",
+                    "surface-variant": "#2f3632",
+                    "secondary": "#adc6ff",
+                    "surface-dim": "#0e1511",
+                    "surface-container-low": "#161d19",
+                    "surface-container-lowest": "#09100c",
+                    "inverse-surface": "#dde4dd",
+                    "on-background": "#dde4dd",
+                    "secondary-container": "#0566d9",
+                    "surface-bright": "#343b36",
+                    "on-primary-fixed-variant": "#005236",
+                    "on-primary": "#003824",
+                    "tertiary-container": "#fc7c78",
+                    "on-surface-variant": "#bbcabf",
+                    "secondary-fixed-dim": "#adc6ff",
+                    "on-secondary-fixed": "#001a42",
+                    "error": "#ffb4ab",
+                    "primary-fixed": "#6ffbbe"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "base": "8px",
+                    "margin-mobile": "16px",
+                    "xl": "64px",
+                    "margin-desktop": "32px",
+                    "xs": "4px",
+                    "sm": "12px",
+                    "md": "24px",
+                    "lg": "40px",
+                    "gutter": "24px"
+            },
+            "fontFamily": {
+                    "headline-lg-mobile": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "label-md": ["JetBrains Mono"],
+                    "headline-md": ["Inter"],
+                    "label-sm": ["JetBrains Mono"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen pb-24 font-body-md overflow-x-hidden">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-mobile h-16 bg-surface/80 backdrop-blur-xl border-b border-white/10">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">memory</span>
+<h1 class="font-headline-md text-headline-md-mobile font-bold tracking-tighter text-primary">BMS CORE</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-1 text-primary">
+<span class="material-symbols-outlined text-sm">battery_charging_full</span>
+<span class="font-label-sm text-label-sm">85%</span>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant hover:opacity-80 transition-opacity active:scale-95 transition-transform">search</button>
+</div>
+</header>
+<main class="mt-20 px-margin-mobile space-y-md lg:max-w-7xl lg:mx-auto">
+<!-- Hero Section: Radial Gauge -->
+<section class="flex flex-col items-center justify-center py-md">
+<div class="relative">
+<div class="radial-progress status-glow-green">
+<div class="z-10 flex flex-col items-center">
+<span class="font-display-lg text-display-lg text-primary">85<span class="text-2xl ml-1">%</span></span>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Charge</span>
+</div>
+</div>
+<!-- Ambient Pulsing Decorative Rings -->
+<div class="absolute inset-0 rounded-full border border-primary/20 scale-125 opacity-30 animate-pulse"></div>
+</div>
+<div class="mt-8 flex gap-8">
+<div class="text-center">
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-1">State of Health</p>
+<p class="font-headline-md text-headline-md text-primary">98%</p>
+</div>
+<div class="text-center">
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-1">Cycles</p>
+<p class="font-headline-md text-headline-md text-primary">124</p>
+</div>
+</div>
+</section>
+<!-- KPI Grid -->
+<section class="grid grid-cols-2 md:grid-cols-3 gap-sm">
+<div class="glass-panel luminous-border p-sm rounded-xl flex flex-col gap-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant">VOLTAGE</span>
+<div class="flex items-baseline gap-1">
+<span class="font-headline-md text-headline-md text-on-surface">400</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">V</span>
+</div>
+<div class="w-full h-1 bg-white/5 rounded-full overflow-hidden mt-2">
+<div class="w-[80%] h-full bg-primary shadow-[0_0_8px_rgba(78,222,163,0.5)]"></div>
+</div>
+</div>
+<div class="glass-panel luminous-border p-sm rounded-xl flex flex-col gap-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant">CURRENT</span>
+<div class="flex items-baseline gap-1">
+<span class="font-headline-md text-headline-md text-on-surface">25.4</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">A</span>
+</div>
+<div class="w-full h-1 bg-white/5 rounded-full overflow-hidden mt-2">
+<div class="w-[45%] h-full bg-secondary shadow-[0_0_8px_rgba(173,198,255,0.5)]"></div>
+</div>
+</div>
+<div class="glass-panel luminous-border p-sm rounded-xl flex flex-col gap-xs col-span-2 md:col-span-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant">POWER</span>
+<div class="flex items-baseline gap-1">
+<span class="font-headline-md text-headline-md text-on-surface">10.2</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">kW</span>
+</div>
+<div class="w-full h-1 bg-white/5 rounded-full overflow-hidden mt-2">
+<div class="w-[60%] h-full bg-primary shadow-[0_0_8px_rgba(78,222,163,0.5)]"></div>
+</div>
+</div>
+</section>
+<!-- Trend Graph -->
+<section class="glass-panel luminous-border p-sm rounded-xl">
+<div class="flex justify-between items-center mb-md">
+<h3 class="font-label-sm text-label-sm text-on-surface tracking-widest uppercase">Voltage vs. Time</h3>
+<span class="font-label-sm text-label-sm text-primary">Live Trend</span>
+</div>
+<div class="relative h-40 w-full overflow-hidden">
+<svg class="w-full h-full preserve-3d" viewbox="0 0 400 100">
+<defs>
+<lineargradient id="gradient" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#4edea3" stop-opacity="0.3"></stop>
+<stop offset="100%" stop-color="#4edea3" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<path d="M0,80 Q50,75 100,60 T200,40 T300,55 T400,30 V100 H0 Z" fill="url(#gradient)"></path>
+<path class="animate-[dash_5s_linear_infinite]" d="M0,80 Q50,75 100,60 T200,40 T300,55 T400,30" fill="none" stroke="#4edea3" stroke-width="2"></path>
+</svg>
+</div>
+<div class="flex justify-between mt-sm text-on-surface-variant font-label-sm text-label-sm">
+<span>12:00</span>
+<span>12:30</span>
+<span>13:00</span>
+<span>NOW</span>
+</div>
+</section>
+<!-- Cell Heatmap & Alarms Bento -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-sm">
+<!-- Cell Temperature Heatmap -->
+<section class="glass-panel luminous-border p-sm rounded-xl">
+<h3 class="font-label-sm text-label-sm text-on-surface tracking-widest uppercase mb-sm">Cell Heatmap</h3>
+<div class="grid grid-cols-4 gap-xs">
+<!-- Green Cells -->
+<div class="aspect-square bg-primary/20 border border-primary/40 rounded flex items-center justify-center text-[10px] text-primary">32°</div>
+<div class="aspect-square bg-primary/20 border border-primary/40 rounded flex items-center justify-center text-[10px] text-primary">31°</div>
+<div class="aspect-square bg-primary/20 border border-primary/40 rounded flex items-center justify-center text-[10px] text-primary">33°</div>
+<div class="aspect-square bg-primary/20 border border-primary/40 rounded flex items-center justify-center text-[10px] text-primary">32°</div>
+<!-- Amber Cell -->
+<div class="aspect-square bg-tertiary-container/20 border border-tertiary-container/40 rounded flex items-center justify-center text-[10px] text-tertiary-container animate-pulse">42°</div>
+<!-- Red Cell -->
+<div class="aspect-square bg-error-container/20 border border-error-container/40 rounded flex items-center justify-center text-[10px] text-error">55°</div>
+<div class="aspect-square bg-primary/20 border border-primary/40 rounded flex items-center justify-center text-[10px] text-primary">34°</div>
+<div class="aspect-square bg-primary/20 border border-primary/40 rounded flex items-center justify-center text-[10px] text-primary">31°</div>
+</div>
+<p class="mt-sm font-label-sm text-label-sm text-on-surface-variant italic">Peak Cell #06: 55°C</p>
+</section>
+<!-- Recent Alarms -->
+<section class="glass-panel luminous-border p-sm rounded-xl">
+<h3 class="font-label-sm text-label-sm text-on-surface tracking-widest uppercase mb-sm">Active Alarms</h3>
+<div class="space-y-xs">
+<div class="flex items-center gap-sm p-xs bg-error-container/10 border border-error-container/20 rounded-lg">
+<span class="material-symbols-outlined text-error text-lg">error</span>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface">Critical Temperature</span>
+<span class="text-[10px] text-on-surface-variant">Cell #06 - 12:45:02</span>
+</div>
+</div>
+<div class="flex items-center gap-sm p-xs bg-tertiary-container/10 border border-tertiary-container/20 rounded-lg">
+<span class="material-symbols-outlined text-tertiary-container text-lg">warning</span>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface">Over-voltage Warning</span>
+<span class="text-[10px] text-on-surface-variant">Rack A - 12:44:15</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-safe h-20 bg-surface/80 backdrop-blur-xl border-t border-white/10 rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-primary bg-primary-container/20 rounded-xl px-4 py-1 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-label-sm text-label-sm">Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label-sm text-label-sm">Analytics</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 transition-transform" href="#">
+<div class="relative">
+<span class="material-symbols-outlined">notifications_active</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
+</div>
+<span class="font-label-sm text-label-sm">Alarms</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-sm text-label-sm">Settings</span>
+</a>
+</nav>
+<script>
+        // Micro-interaction for radial gauge
+        document.addEventListener('DOMContentLoaded', () => {
+            const gauge = document.querySelector('.radial-progress');
+            let progress = 0;
+            const target = 85;
+            
+            const animate = () => {
+                if(progress < target) {
+                    progress += 1;
+                    gauge.style.setProperty('--value', progress);
+                    requestAnimationFrame(animate);
+                }
+            };
+            
+            animate();
+        });
+    </script>
+</body></html>
